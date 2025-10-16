@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+
+{% block title %}ログイン / ユーザ登録{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
+        <div>
+            <h2 id="form-title" class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                ログイン
+            </h2>
+        </div>
+        
+        <!-- Login Form -->
+        <form id="login-form" class="mt-8 space-y-6" action="{{ url_for('login') }}" method="POST">
+            <div class="rounded-md shadow-sm -space-y-px">
+                <div>
+                    <label for="login-email" class="sr-only">メールアドレス</label>
+                    <input id="login-email" name="email" type="email" autocomplete="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="メールアドレス">
+                </div>
+                <div>
+                    <label for="login-password" class="sr-only">パスワード</label>
+                    <input id="login-password" name="password" type="password" autocomplete="current-password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="パスワード">
+                </div>
+            </div>
+            <div>
+                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    ログイン
+                </button>
+            </div>
+        </form>
+
+        <!-- Registration Form (initially hidden) -->
+        <form id="register-form" class="mt-8 space-y-6 hidden" action="{{ url_for('register') }}" method="POST">
+            <div class="rounded-md shadow-sm">
+                <div>
+                    <label for="register-username" class="sr-only">ユーザ名</label>
+                    <input id="register-username" name="username" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="ユーザ名">
+                </div>
+                <div>
+                    <label for="register-email" class="sr-only">メールアドレス</label>
+                    <input id="register-email" name="email" type="email" autocomplete="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="メールアドレス">
+                </div>
+                <div>
+                    <label for="register-password" class="sr-only">パスワード</label>
+                    <input id="register-password" name="password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="パスワード">
+                </div>
+            </div>
+            <div>
+                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    登録する
+                </button>
+            </div>
+        </form>
+
+        <div class="text-sm text-center">
+            <a href="#" id="toggle-form" class="font-medium text-indigo-600 hover:text-indigo-500">
+                アカウントをお持ちでないですか？ 新規登録
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const toggleLink = document.getElementById('toggle-form');
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    const formTitle = document.getElementById('form-title');
+
+    toggleLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (loginForm.classList.contains('hidden')) {
+            // Show login form
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+            formTitle.innerText = 'ログイン';
+            toggleLink.innerText = 'アカウントをお持ちでないですか？ 新規登録';
+        } else {
+            // Show register form
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+            formTitle.innerText = '新規登録';
+            toggleLink.innerText = '既にアカウントをお持ちですか？ ログイン';
+        }
+    });
+</script>
+{% endblock %}
