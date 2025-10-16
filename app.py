@@ -13,11 +13,13 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a_very_secret_key_that_should_be_changed')
 
 # データベース設定
+db_uri = os.environ.get('DATABASE_URL')
+# RenderのPostgreSQL URLは 'postgres://' で始まるため、'postgresql://' に置換
+if db_uri and db_uri.startswith("postgres://"):
+    db_uri = db_uri.replace("postgres://", "postgresql://", 1)
+
 basedir = os.path.abspath(os.path.dirname(__file__))
-# Renderの無料プランではファイルシステムが一時的なものなので、永続的なデータベースURLを使用します
-# 環境変数にDATABASE_URLが設定されていればそれを使用し、なければローカルのsqliteを使用します
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or \
-    'sqlite:///' + os.path.join(basedir, 'blog.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = db_uri or 'sqlite:///' + os.path.join(basedir, 'blog.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -79,9 +81,6 @@ def load_user(user_id):
 # 記事一覧表示 (トップページ)
 @app.route('/')
 def index():
-    # データベースのテーブルをアプリケーションコンテキスト内で作成
-    with app.app_context():
-        db.create_all()
     articles = Article.query.order_by(Article.date_posted.desc()).all()
     return render_template('index.html', articles=articles)
 
@@ -208,13 +207,19 @@ def add_comment(article_id):
     return redirect(url_for('article', article_id=article_id))
 
 # ---------------------------------
-# データベース初期化コマンド (ローカル用)
+# データベース初期化
 # ---------------------------------
+# アプリケーションコンテキスト内でテーブルを作成
+with app.app_context():
+    db.create_all()
+    
+# ローカル開発用のDB初期化コマンド
 @app.cli.command('init-db')
 def init_db_command():
-    """データベーステーブルを作成します。"""
+    """データベーステーブルを再作成します。"""
+    db.drop_all()
     db.create_all()
-    print('データベースの初期化が完了しました。')
+    print('データベースを再作成しました。')
 
 # 以下のブロックは本番環境では不要なため削除またはコメントアウトします。
 # if __name__ == '__main__':
