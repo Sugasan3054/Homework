@@ -21,10 +21,10 @@ startCommand: "gunicorn 'app:app'"
 envVars:
 
 key: PYTHON_VERSION
-value: 3.10.6 # 使用するPythonのバージョン
+value: 3.10.6
 
 key: SECRET_KEY
-generateValue: true # ランダムなSECRET_KEYを自動生成
+generateValue: true
 
 key: DATABASE_URL
 fromDatabase:
@@ -35,4 +35,4 @@ property: connectionString
 
 type: psql
 name: blog-database
-plan: free # 無料プランを使用
+plan: free
