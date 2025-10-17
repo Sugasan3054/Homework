@@ -16,4 +16,4 @@ services:
 
   - type: postgres
     name: blog-database
-    plan: free
+    plan: standard
