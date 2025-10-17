@@ -12,6 +12,15 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a_very_secret_key_that_should_be_changed')
 
+@app.template_filter('nl2br')
+def nl2br(text):
+    if text is None:
+        return ''
+    # HTMLエスケープしてから改行をbrタグに変換
+    from markupsafe import escape
+    text = escape(text)
+    return Markup(text.replace('\n', '<br>\n'))
+
 # データベース設定
 db_uri = os.environ.get('DATABASE_URL')
 # RenderのPostgreSQL URLは 'postgres://' で始まるため、'postgresql://' に置換
