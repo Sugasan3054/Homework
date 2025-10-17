@@ -32,6 +32,41 @@ def to_jst(utc_dt):
     jst = timezone(timedelta(hours=9))
     return utc_dt.replace(tzinfo=timezone.utc).astimezone(jst).strftime('%Y年%m月%d日 %H:%M')
 
+# コメント編集ページ
+@app.route('/edit_comment/<int:comment_id>', methods=['GET', 'POST'])
+@login_required
+def edit_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    
+    # 本人以外は編集不可
+    if current_user != comment.commenter:
+        abort(403)
+    
+    if request.method == 'POST':
+        comment.content = request.form['content']
+        db.session.commit()
+        flash('コメントを更新しました', 'success')
+        return redirect(url_for('article', article_id=comment.article_id))
+    
+    return render_template('edit_comment.html', comment=comment)
+
+
+# コメント削除
+@app.route('/delete_comment/<int:comment_id>', methods=['POST'])
+@login_required
+def delete_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    
+    # 本人以外は削除不可
+    if current_user != comment.commenter:
+        abort(403)
+    
+    article_id = comment.article_id
+    db.session.delete(comment)
+    db.session.commit()
+    flash('コメントを削除しました', 'success')
+    return redirect(url_for('article', article_id=article_id))
+
 # データベース設定
 db_uri = os.environ.get('DATABASE_URL')
 # RenderのPostgreSQL URLは 'postgres://' で始まるため、'postgresql://' に置換
