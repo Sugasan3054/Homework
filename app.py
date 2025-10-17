@@ -4,6 +4,7 @@ from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user, login_required
+from markupsafe import Markup 
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # ---------------------------------
