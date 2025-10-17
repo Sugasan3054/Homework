@@ -24,6 +24,14 @@ def nl2br(text):
     text = escape(text)
     return Markup(text.replace('\n', '<br>\n'))
 
+@app.template_filter('jst')
+def to_jst(utc_dt):
+    """UTC時刻をJST（日本時間）に変換"""
+    if utc_dt is None:
+        return ''
+    jst = timezone(timedelta(hours=9))
+    return utc_dt.replace(tzinfo=timezone.utc).astimezone(jst).strftime('%Y年%m月%d日 %H:%M')
+
 # データベース設定
 db_uri = os.environ.get('DATABASE_URL')
 # RenderのPostgreSQL URLは 'postgres://' で始まるため、'postgresql://' に置換
