@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ブログシステム{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Hiragino Kaku Gothic ProN', 'メイリオ', sans-serif;
+        }
+        .flash-message {
+            transition: opacity 0.5s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="{{ url_for('index') }}" class="text-2xl font-bold text-gray-800">MyBlog</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    {% if current_user.is_authenticated %}
+                        <span class="text-gray-600">こんにちは, {{ current_user.username }} さん</span>
+                        <a href="{{ url_for('new_article') }}" class="text-white bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded-md text-sm font-medium">新しい記事</a>
+                        <a href="{{ url_for('logout') }}" class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">ログアウト</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="text-white bg-green-500 hover:bg-green-600 px-3 py-2 rounded-md text-sm font-medium">ログイン / 登録</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div id="flash-container" class="px-4 py-6">
+                        <div class="flash-message bg-{{ 'green' if category == 'success' else ('red' if category == 'danger' else 'blue') }}-100 border-l-4 border-{{ 'green' if category == 'success' else ('red' if category == 'danger' else 'blue') }}-500 text-{{ 'green' if category == 'success' else ('red' if category == 'danger' else 'blue') }}-700 p-4 rounded-md" role="alert">
+                            <p>{{ message }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-white mt-8 py-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-500">
+            <p>&copy; 2025 ブログシステム</p>
+        </div>
+    </footer>
+
+    <script>
+        // Flashメッセージを5秒後に非表示にする
+        const flashContainer = document.getElementById('flash-container');
+        if (flashContainer) {
+            setTimeout(() => {
+                const flashMessage = flashContainer.querySelector('.flash-message');
+                if (flashMessage) {
+                    flashMessage.style.opacity = '0';
+                    setTimeout(() => flashContainer.remove(), 500);
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
