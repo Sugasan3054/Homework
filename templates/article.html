@@ -10,7 +10,7 @@
         <div class="flex items-center text-gray-500 text-sm mb-6">
             <span>作成者: {{ article.author.username }}</span>
             <span class="mx-2">&bull;</span>
-            <span>投稿日時: {{ article.date_posted.strftime('%Y年%m月%d日 %H:%M') }}</span>
+            <span>投稿日時: {{ article.date_posted | jst }}</span>
         </div>
             <div class="prose max-w-none text-gray-700 leading-relaxed">
             <div style="white-space: pre-wrap;">{{ article.content }}</div>
