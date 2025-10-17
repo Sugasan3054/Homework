@@ -14,6 +14,6 @@ services:
           name: blog-database
           property: connectionString
 
-  - type: psql
+  - type: postgres
     name: blog-database
     plan: free
