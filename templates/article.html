@@ -60,7 +60,7 @@
                 <p class="font-semibold text-gray-800">{{ comment.commenter.username }}</p>
                 <p class="text-xs text-gray-500">{{ comment.date_posted.strftime('%Y年%m月%d日 %H:%M') }}</p>
             </div>
-            <div class="text-gray-600" style="white-space: pre-wrap;">{{ comment.content }}</div>
+            <span>投稿日時: {{ article.date_posted | jst }}</span>
         </div>
         {% else %}
         <div class="bg-white rounded-lg shadow-sm p-5 text-center">
